@@ -5,6 +5,9 @@ const getPost = (id) => {
   const error = ref(null);
   const load = async () => {
     try {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 1000);
+      });
       const data = await fetch("http://localhost:3000/posts/" + id);
       if (!data.ok) {
         throw Error("no post");
