@@ -4,7 +4,7 @@
     <h3>{{ post.title }}</h3>
     <p class="pre">{{ post.body }}</p>
     <span v-for="tag in post.tags" :key="tag"> #{{ tag }} </span>
-    <button @click="deletePost" style="font-size: 24px">
+    <button @click="showDeleteConfirmation" style="font-size: 24px">
       <i class="fa fa-trash-o" style="color: #ff8800"></i>
     </button>
   </div>
@@ -19,15 +19,18 @@ import getPost from "../composables/getPost";
 import Spinner from "../components/Spinner.vue";
 import { useRoute, useRouter } from "vue-router";
 import { inject } from "vue";
+import Swal from "sweetalert2";
 
 export default {
   props: ["id"],
   components: { Spinner },
+
   setup(props) {
+    const handleDeletePost = inject("handleDeletePost");
+
     const route = useRoute();
     const { post, error, load } = getPost(route.params.id);
     load();
-    const handleDeletePost = inject("handleDeletePost");
     const router = useRouter();
     const deletePost = () => {
       fetch(`http://localhost:3000/posts/${props.id}`, {
@@ -42,7 +45,24 @@ export default {
         });
       router.push({ name: "Home" });
     };
-    return { post, error, deletePost };
+    const showDeleteConfirmation = () => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deletePost();
+          Swal.fire("Deleted!", "Your post has been deleted.", "success");
+        }
+      });
+    };
+
+    return { post, error, showDeleteConfirmation, handleDeletePost };
   },
 };
 </script>
