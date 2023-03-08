@@ -14,7 +14,7 @@
 </template>
 
 <script >
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 import getPost from "../composables/getPost";
 import Spinner from "../components/Spinner.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -23,11 +23,11 @@ import Swal from "sweetalert2";
 
 export default {
   props: ["id"],
+
   components: { Spinner },
 
-  setup(props) {
-    const handleDeletePost = inject("handleDeletePost");
-
+  setup(props, { emit }) {
+    // const handleDeletePost = inject("handleDeletePost");
     const route = useRoute();
     const { post, error, load } = getPost(route.params.id);
     load();
@@ -38,7 +38,7 @@ export default {
       })
         .then(() => {
           // call the handleDeletePost function with the post ID
-          handleDeletePost(props.id);
+          emit("delete", props.id);
         })
         .catch((error) => {
           console.error("Error deleting post:", error);
@@ -62,13 +62,11 @@ export default {
       });
     };
 
-    return { post, error, showDeleteConfirmation, handleDeletePost };
+    return { post, error, showDeleteConfirmation };
   },
 };
 </script>
- fetch(uri, { method: 'DELETE' })
-        .then(() => this.$emit('delete', this.project.id))
-        .catch(err => console.log(err))
+ 
 <style scoped>
 .post {
   max-width: 1200px;

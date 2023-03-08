@@ -2,7 +2,7 @@
   <div class="home">
     <div v-if="error">{{ error }}</div>
     <div v-if="posts.length" class="layout">
-      <PostList :posts="posts" />
+      <PostList :posts="posts" @delete="handleDeletePost" />
       <TagCloud :posts="posts" />
     </div>
     <div v-else>
