@@ -24,14 +24,14 @@ export default {
     const tags = ref([]);
     const router = useRouter();
     const handleKeydown = () => {
-      if (!tags.value.includes(tag.value)) {
-        tag.value = tag.value.replace(/\s/, ""); //removes all whitespace
+      if (!tags.value.includes(tag.value) && tag.value !== "") {
+        tag.value = tag.value.replace(/\s/g, ""); // remove all whitespace
         tags.value.push(tag.value);
       }
       tag.value = "";
     };
     const handleSubmit = async () => {
-      let post = {
+      const post = {
         id: Math.floor(Math.random() * 10000),
         title: title.value,
         body: body.value,
@@ -44,6 +44,7 @@ export default {
       });
       router.push({ name: "Home" });
     };
+
     return { title, body, tag, tags, handleKeydown, handleSubmit };
   },
 };
