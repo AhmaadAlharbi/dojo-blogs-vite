@@ -11,6 +11,7 @@
   </div>
 </template>
 <script setup >
+import { provide, inject } from "vue";
 import { ref } from "vue";
 import PostList from "../components/PostList.vue";
 import TagCloud from "../components/TagCloud.vue";
@@ -18,6 +19,11 @@ import getPosts from "../composables/getPosts";
 import Spinner from "../components/Spinner.vue";
 
 const { posts, error, load } = getPosts();
+const handleDeletePost = (id) => {
+  posts.value = posts.value.filter((post) => post.id !== id);
+};
+provide("handleDeletePost", handleDeletePost);
+
 load();
 </script>
 <style >
